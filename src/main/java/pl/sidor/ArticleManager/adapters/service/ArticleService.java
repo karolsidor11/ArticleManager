@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sidor.ArticleManager.adapters.mapper.ArticleMapper;
 import pl.sidor.ArticleManager.domain.model.entity.Article;
 import pl.sidor.ArticleManager.domain.ports.ArticleRepository;
 
@@ -46,7 +47,9 @@ public class ArticleService implements ArticleRepository {
 
     @Override
     public Article modify(Article article) {
-        return entityManager.merge(article);
+        Article actualArticle = getById(article.getId()).getOrNull();
+        Article modifyArticle = ArticleMapper.modifyArticle(actualArticle, article);
+        return entityManager.merge(modifyArticle);
     }
 
     @Override

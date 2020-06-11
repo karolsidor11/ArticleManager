@@ -11,13 +11,20 @@ import java.time.ZonedDateTime;
 public final class ArticleMapper {
 
     public static ArticleResponse map(Article article) {
-        return ArticleResponse.builder().
-                applicationName("Article Manager")
+        return ArticleResponse.builder()
+                .applicationName("Article Manager")
                 .applicationVersion("1.0.0 SNAPSHOT")
                 .actualDate(ZonedDateTime.now())
                 .title(article.getTitle())
                 .author(article.getAuthor())
                 .content(article.getContent())
                 .build();
+    }
+
+    public static Article modifyArticle(Article actualArticle, Article modifyArticle){
+        actualArticle.setTitle(modifyArticle.getTitle());
+        actualArticle.setAuthor(modifyArticle.getAuthor());
+        actualArticle.setContent(modifyArticle.getContent());
+        return actualArticle;
     }
 }

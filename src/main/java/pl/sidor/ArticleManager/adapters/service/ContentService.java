@@ -4,6 +4,7 @@ import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sidor.ArticleManager.adapters.mapper.ContentMapper;
 import pl.sidor.ArticleManager.domain.model.entity.Content;
 import pl.sidor.ArticleManager.domain.ports.ContentRepository;
 
@@ -41,7 +42,9 @@ public class ContentService implements ContentRepository {
 
     @Override
     public Content modify(Content content) {
-        return entityManager.merge(content);
+        Content actualContent = getById(content.getId()).getOrNull();
+        Content modifyContent = ContentMapper.modifyContent(actualContent, content);
+        return entityManager.merge(modifyContent);
     }
 
     @Override

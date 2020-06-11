@@ -18,8 +18,8 @@ public class ArticleEndpoint {
         return articleFasade.findById(id);
     }
 
-    @GetMapping(value = "/{title}")
-    public ArticleResponse findById(@PathVariable String title) {
+    @GetMapping(value = "/title/{title}")
+    public ArticleResponse findByTitle(@PathVariable String title) {
         return articleFasade.findByTitle(title);
     }
 

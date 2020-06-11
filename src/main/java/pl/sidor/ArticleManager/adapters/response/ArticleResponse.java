@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 public final class ArticleResponse {
 
     private String applicationName;
