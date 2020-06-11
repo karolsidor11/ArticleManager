@@ -4,15 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
-
 @Getter
 @Setter
 @Builder(toBuilder = true)
-public final class ContentResponse {
+public final class AuthorResponse {
 
     private String applicationName;
     private String applicationVersion;
-    private ZonedDateTime actualDate;
-    private String value;
+    private String name;
+    private String lastName;
+    private String email;
 }

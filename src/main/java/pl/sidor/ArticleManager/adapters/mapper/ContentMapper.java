@@ -18,4 +18,9 @@ public final class ContentMapper {
                 .value(content.getValue())
                 .build();
     }
+
+    public static Content modifyContent(Content actualContent, Content modifyContent){
+        actualContent.setValue(modifyContent.getValue());
+        return actualContent;
+    }
 }
