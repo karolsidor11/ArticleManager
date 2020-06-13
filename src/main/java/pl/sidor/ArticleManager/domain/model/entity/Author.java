@@ -24,5 +24,5 @@ public class Author extends BaseEntity<Long> implements Serializable {
     private String lastName;
 
     @Column(name = "emial")
-    private String eamil;
+    private String email;
 }
