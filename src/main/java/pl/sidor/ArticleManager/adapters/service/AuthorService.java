@@ -2,6 +2,7 @@ package pl.sidor.ArticleManager.adapters.service;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sidor.ArticleManager.adapters.mapper.AuthorMapper;
@@ -16,12 +17,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 @Service
+@Setter
 @Transactional
 @RequiredArgsConstructor
 public class AuthorService implements AuthorRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public Author save(Author author) {
@@ -36,13 +38,7 @@ public class AuthorService implements AuthorRepository {
 
     @Override
     public Option<Author> getByNameAndLastName(String name, String lastName) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Author> query = criteriaBuilder.createQuery(Author.class);
-        Root<Author> root = query.from(Author.class);
-        Predicate namePredicate = criteriaBuilder.equal(root.get("name"), name);
-        Predicate lastNamePredicate = criteriaBuilder.equal(root.get("lastName"), lastName);
-        query.where(namePredicate, lastNamePredicate);
-
+        CriteriaQuery<Author> query = prepareQuery(name, lastName);
         return Option.of(entityManager.createQuery(query).getSingleResult());
     }
 
@@ -56,5 +52,15 @@ public class AuthorService implements AuthorRepository {
     @Override
     public void delete(Long id) {
         getById(id).toJavaOptional().ifPresent(entityManager::remove);
+    }
+
+    private CriteriaQuery<Author> prepareQuery(String name, String lastName) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Author> query = criteriaBuilder.createQuery(Author.class);
+        Root<Author> root = query.from(Author.class);
+        Predicate namePredicate = criteriaBuilder.equal(root.get("name"), name);
+        Predicate lastNamePredicate = criteriaBuilder.equal(root.get("lastName"), lastName);
+        query.where(namePredicate, lastNamePredicate);
+        return query;
     }
 }

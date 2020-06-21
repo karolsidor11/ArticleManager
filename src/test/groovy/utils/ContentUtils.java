@@ -15,4 +15,18 @@ public class ContentUtils {
                 .value("Zmieniona treść testowa")
                 .build();
     }
+
+    public static Content getFullContent(){
+        Content content = new Content();
+        content.setId(1L);
+        content.setValue("Treść podstawowa");
+        return content;
+    }
+
+    public static Content getFullContentSecond(){
+        Content content = new Content();
+        content.setId(1L);
+        content.setValue("Treść zmieniona");
+        return content;
+    }
 }

@@ -2,6 +2,7 @@ package pl.sidor.ArticleManager.adapters.service;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sidor.ArticleManager.adapters.mapper.ContentMapper;
@@ -10,28 +11,19 @@ import pl.sidor.ArticleManager.domain.ports.ContentRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 @Service
+@Setter
 @Transactional
 @RequiredArgsConstructor
 public class ContentService implements ContentRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public Option<Content> getById(Long id) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Content> query = criteriaBuilder.createQuery(Content.class);
-        Root<Content> root = query.from(Content.class);
-        Predicate idPredicate = criteriaBuilder.equal(root.get("id"), id);
-        query.where(idPredicate);
-
-        return Option.of(entityManager.createQuery(query).getSingleResult());
+        return Option.of(entityManager.find(Content.class, id));
     }
 
     @Override
