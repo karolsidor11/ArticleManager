@@ -19,4 +19,24 @@ public class AuthorUtils {
                 .email("kowalski@wp.pl")
                 .build();
     }
+
+    public static Author getFullAuthor(){
+        Author author= new Author();
+        author.setId(1L);
+        author.setName("Jan");
+        author.setLastName("Kowalski");
+        author.setEmail("kowalski@wp.pl");
+
+        return author;
+    }
+
+    public static Author getFullAuthorSecond(){
+        Author author= new Author();
+        author.setId(1L);
+        author.setName("Jan");
+        author.setLastName("Nowak");
+        author.setEmail("nowak@wp.pl");
+
+        return author;
+    }
 }

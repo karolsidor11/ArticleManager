@@ -2,6 +2,7 @@ package pl.sidor.ArticleManager.adapters.service;
 
 import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sidor.ArticleManager.adapters.mapper.ArticleMapper;
@@ -16,12 +17,13 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 @Service
+@Setter
 @Transactional
 @RequiredArgsConstructor
 public class ArticleService implements ArticleRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public Option<Article> getById(Long id) {
@@ -30,12 +32,7 @@ public class ArticleService implements ArticleRepository {
 
     @Override
     public Option<Article> getByTitle(String title) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Article> query = criteriaBuilder.createQuery(Article.class);
-        Root<Article> root = query.from(Article.class);
-        Predicate titlePredicate = criteriaBuilder.equal(root.get("title"), title);
-        query.where(titlePredicate);
-
+        CriteriaQuery<Article> query = prepareQuery(title);
         return Option.of(entityManager.createQuery(query).getSingleResult());
     }
 
@@ -55,5 +52,14 @@ public class ArticleService implements ArticleRepository {
     @Override
     public void delete(Long id) {
         getById(id).toJavaOptional().ifPresent(entityManager::remove);
+    }
+
+    private CriteriaQuery<Article> prepareQuery(String title) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Article> query = criteriaBuilder.createQuery(Article.class);
+        Root<Article> root = query.from(Article.class);
+        Predicate titlePredicate = criteriaBuilder.equal(root.get("title"), title);
+        query.where(titlePredicate);
+        return query;
     }
 }
