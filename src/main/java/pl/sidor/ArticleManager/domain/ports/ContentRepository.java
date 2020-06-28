@@ -11,5 +11,5 @@ public interface ContentRepository {
 
     Content modify(Content content);
 
-    void delete(Long id);
+    Option<Content> delete(Long id);
 }

@@ -33,7 +33,7 @@ public class ArticleService implements ArticleRepository {
     @Override
     public Option<Article> getByTitle(String title) {
         CriteriaQuery<Article> query = prepareQuery(title);
-        return Option.of(entityManager.createQuery(query).getSingleResult());
+        return Option.ofOptional(entityManager.createQuery(query).getResultStream().findFirst());
     }
 
     @Override
@@ -44,14 +44,15 @@ public class ArticleService implements ArticleRepository {
 
     @Override
     public Article modify(Article article) {
-        Article actualArticle = getById(article.getId()).getOrNull();
-        Article modifyArticle = ArticleMapper.modifyArticle(actualArticle, article);
-        return entityManager.merge(modifyArticle);
+        Option<Article> currentArticle = getById(article.getId());
+        return currentArticle.isEmpty() ? null : updateArticle(article, currentArticle.get());
     }
 
     @Override
-    public void delete(Long id) {
-        getById(id).toJavaOptional().ifPresent(entityManager::remove);
+    public Option<Article> delete(Long id) {
+        Option<Article> article = getById(id);
+        article.toJavaOptional().ifPresent(entityManager::remove);
+        return article;
     }
 
     private CriteriaQuery<Article> prepareQuery(String title) {
@@ -61,5 +62,10 @@ public class ArticleService implements ArticleRepository {
         Predicate titlePredicate = criteriaBuilder.equal(root.get("title"), title);
         query.where(titlePredicate);
         return query;
+    }
+
+    private Article updateArticle(Article article, Article currentArticle) {
+        Article modifyArticle = ArticleMapper.modifyArticle(currentArticle, article);
+        return entityManager.merge(modifyArticle);
     }
 }
