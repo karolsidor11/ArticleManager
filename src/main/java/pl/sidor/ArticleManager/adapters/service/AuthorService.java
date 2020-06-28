@@ -39,19 +39,20 @@ public class AuthorService implements AuthorRepository {
     @Override
     public Option<Author> getByNameAndLastName(String name, String lastName) {
         CriteriaQuery<Author> query = prepareQuery(name, lastName);
-        return Option.of(entityManager.createQuery(query).getSingleResult());
+        return Option.ofOptional(entityManager.createQuery(query).getResultStream().findFirst());
     }
 
     @Override
     public Author modify(Author author) {
-        Author actualAuthor = getById(author.getId()).getOrNull();
-        Author modifyAuthor = AuthorMapper.modifyAuthor(actualAuthor, author);
-        return entityManager.merge(modifyAuthor);
+        Option<Author> authorOption = getById(author.getId());
+        return authorOption.isEmpty() ? null : updateAuthor(authorOption.get(), author);
     }
 
     @Override
-    public void delete(Long id) {
-        getById(id).toJavaOptional().ifPresent(entityManager::remove);
+    public Option<Author> delete(Long id) {
+        Option<Author> author = getById(id);
+        author.toJavaOptional().ifPresent(entityManager::remove);
+        return author;
     }
 
     private CriteriaQuery<Author> prepareQuery(String name, String lastName) {
@@ -62,5 +63,10 @@ public class AuthorService implements AuthorRepository {
         Predicate lastNamePredicate = criteriaBuilder.equal(root.get("lastName"), lastName);
         query.where(namePredicate, lastNamePredicate);
         return query;
+    }
+
+    private Author updateAuthor(Author author, Author currentAuthor) {
+        Author modifyAuthor = AuthorMapper.modifyAuthor(currentAuthor, author);
+        return entityManager.merge(modifyAuthor);
     }
 }

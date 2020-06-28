@@ -13,5 +13,5 @@ public interface AuthorRepository {
 
     Author modify(Author author);
 
-    void delete(Long id);
+    Option<Author> delete(Long id);
 }

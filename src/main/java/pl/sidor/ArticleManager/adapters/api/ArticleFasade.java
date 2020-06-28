@@ -1,40 +1,51 @@
 package pl.sidor.ArticleManager.adapters.api;
 
+import io.vavr.control.Option;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.sidor.ArticleManager.adapters.mapper.ArticleMapper;
 import pl.sidor.ArticleManager.adapters.response.ArticleResponse;
 import pl.sidor.ArticleManager.adapters.service.ArticleService;
 import pl.sidor.ArticleManager.domain.model.entity.Article;
+
+import static java.util.Objects.isNull;
+import static pl.sidor.ArticleManager.exception.MessageException.*;
 
 @Component
 @RequiredArgsConstructor
 public class ArticleFasade {
 
     private final ArticleService articleService;
+    private final ArticleResponse articleResponse;
 
     ArticleResponse findById(Long id) {
-        Article article = articleService.getById(id).getOrNull();
-        return ArticleMapper.map(article);
+        Option<Article> article = articleService.getById(id);
+        return articleResponse.createResponse(article, NOT_FOUND_BY_ID.getMessage());
     }
 
     ArticleResponse findByTitle(String title) {
-        Article article = articleService.getByTitle(title).getOrNull();
-        return ArticleMapper.map(article);
+        Option<Article> article = articleService.getByTitle(title);
+        return articleResponse.createResponse(article, NOT_FOUND_BY_TITLE.getMessage());
     }
 
     ArticleResponse save(Article article) {
-        Article saveArticle = articleService.save(article);
-        return ArticleMapper.map(saveArticle);
+        return isNull(article.getAuthor()) ? articleResponse.createFailsResponse(NOT_SAVE.getMessage()) : saveArticle(article);
     }
 
     ArticleResponse modify(Article article) {
-        Article modifyArticle = articleService.modify(article);
-        return ArticleMapper.map(modifyArticle);
+        Option<Article> articleOption = Option.of(articleService.modify(article));
+        String message = articleOption.isEmpty() ? NOT_MODIFY.getMessage() : MODIFY_ARTICLE.getMessage();
+        return articleResponse.createResponse(articleOption, message);
     }
 
     ArticleResponse delete(Long id) {
-        articleService.delete(id);
-        return ArticleMapper.map(Article.builder().build());
+        Option<Article> article = articleService.delete(id);
+        String message = article.isEmpty() ? NOT_DELETE_BY_ID.getMessage() : DELETE_BY_ID.getMessage();
+        return articleResponse.createFailsResponse(message);
+    }
+
+
+    private ArticleResponse saveArticle(Article article) {
+        Option<Article> articleOption = Option.of(articleService.save(article));
+        return articleResponse.createResponse(articleOption, null);
     }
 }

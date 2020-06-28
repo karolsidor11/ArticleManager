@@ -34,13 +34,19 @@ public class ContentService implements ContentRepository {
 
     @Override
     public Content modify(Content content) {
-        Content actualContent = getById(content.getId()).getOrNull();
-        Content modifyContent = ContentMapper.modifyContent(actualContent, content);
-        return entityManager.merge(modifyContent);
+        Option<Content> contentOption = getById(content.getId());
+        return contentOption.isEmpty() ? null : updateContent(contentOption.get(), content);
     }
 
     @Override
-    public void delete(Long id) {
-        getById(id).toJavaOptional().ifPresent(entityManager::remove);
+    public Option<Content> delete(Long id) {
+        Option<Content> content = getById(id);
+        content.toJavaOptional().ifPresent(entityManager::remove);
+        return content;
+    }
+
+    private Content updateContent(Content content, Content currentContent) {
+        Content modifyContent = ContentMapper.modifyContent(currentContent, content);
+        return entityManager.merge(modifyContent);
     }
 }
