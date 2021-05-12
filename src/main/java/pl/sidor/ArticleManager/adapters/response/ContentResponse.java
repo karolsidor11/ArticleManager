@@ -8,15 +8,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.sidor.ArticleManager.adapters.mapper.ContentMapper;
 import pl.sidor.ArticleManager.domain.model.entity.Content;
-import pl.sidor.ArticleManager.utils.ApplicationUtils;
 
 import java.time.ZonedDateTime;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Component
+@AllArgsConstructor
+@NoArgsConstructor
 public final class ContentResponse {
 
     private String applicationName;
@@ -26,23 +25,14 @@ public final class ContentResponse {
     private String message;
 
     public ContentResponse createResponse(Option<Content> content, String message){
-        return content.isEmpty()? buildFailsResponse(message):createSuccesResponse(content.get());
+        return content.isEmpty() ? createFailsResponse(message) : createSuccesResponse(content.get());
     }
 
     public ContentResponse createFailsResponse(String message){
-        return buildFailsResponse(message);
+        return ContentMapper.buildFailsResponse(message);
     }
 
-    private ContentResponse createSuccesResponse(Content content){
-        return ContentMapper.map(content);
-    }
-
-    private ContentResponse buildFailsResponse(String message){
-        return ContentResponse.builder()
-                .applicationName(ApplicationUtils.APPLICATION_NAME)
-                .applicationVersion(ApplicationUtils.APPLICATION_VERSION)
-                .actualDate(ZonedDateTime.now())
-                .message(message)
-                .build();
+    protected ContentResponse createSuccesResponse(Content content){
+        return ContentMapper.buildSuccessResponse(content);
     }
 }

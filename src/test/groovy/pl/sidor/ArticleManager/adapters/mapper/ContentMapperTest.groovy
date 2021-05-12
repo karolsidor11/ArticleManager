@@ -12,7 +12,7 @@ class ContentMapperTest extends Specification {
         Content content = ContentUtils.getContent1()
 
         when:
-        def result = ContentMapper.map(content)
+        def result = ContentMapper.buildSuccessResponse(content)
 
         then:
         result != null

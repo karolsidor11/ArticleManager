@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Optional;
 
 @Service
 @Setter
@@ -38,8 +39,8 @@ public class AuthorService implements AuthorRepository {
 
     @Override
     public Option<Author> getByNameAndLastName(String name, String lastName) {
-        CriteriaQuery<Author> query = prepareQuery(name, lastName);
-        return Option.ofOptional(entityManager.createQuery(query).getResultStream().findFirst());
+        Optional<Author> author = tryFindByNameAndLastName(name, lastName);
+        return Option.ofOptional(author);
     }
 
     @Override
@@ -55,14 +56,15 @@ public class AuthorService implements AuthorRepository {
         return author;
     }
 
-    private CriteriaQuery<Author> prepareQuery(String name, String lastName) {
+    private Optional<Author> tryFindByNameAndLastName(String name, String lastName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Author> query = criteriaBuilder.createQuery(Author.class);
         Root<Author> root = query.from(Author.class);
         Predicate namePredicate = criteriaBuilder.equal(root.get("name"), name);
         Predicate lastNamePredicate = criteriaBuilder.equal(root.get("lastName"), lastName);
         query.where(namePredicate, lastNamePredicate);
-        return query;
+
+        return entityManager.createQuery(query).getResultStream().findFirst();
     }
 
     private Author updateAuthor(Author author, Author currentAuthor) {

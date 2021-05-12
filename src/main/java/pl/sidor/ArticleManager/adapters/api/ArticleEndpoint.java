@@ -7,7 +7,7 @@ import pl.sidor.ArticleManager.adapters.response.ArticleResponse;
 import pl.sidor.ArticleManager.domain.model.entity.Article;
 
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("/api/v1/articles")
 @RequiredArgsConstructor
 public class ArticleEndpoint {
 

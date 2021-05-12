@@ -10,7 +10,6 @@ import pl.sidor.ArticleManager.adapters.mapper.ArticleMapper;
 import pl.sidor.ArticleManager.domain.model.entity.Article;
 import pl.sidor.ArticleManager.domain.model.entity.Author;
 import pl.sidor.ArticleManager.domain.model.entity.Content;
-import pl.sidor.ArticleManager.utils.ApplicationUtils;
 
 import java.time.ZonedDateTime;
 
@@ -30,23 +29,14 @@ public final class ArticleResponse {
     private String message;
 
     public ArticleResponse createResponse(Option<Article> article, String message) {
-        return article.isEmpty() ? createFailsResponse(message) : createSuccesResponse(article.get());
+        return article.isEmpty() ? createFailsResponse(message) : createSuccessResponse(article.get());
     }
 
     public ArticleResponse createFailsResponse(String message) {
-        return buildResponse(message);
+        return ArticleMapper.buildFailsResponse(message);
     }
 
-    private ArticleResponse createSuccesResponse(Article article) {
-        return ArticleMapper.map(article);
-    }
-
-    private ArticleResponse buildResponse(String message) {
-        return ArticleResponse.builder()
-                .applicationName(ApplicationUtils.APPLICATION_NAME)
-                .applicationVersion(ApplicationUtils.APPLICATION_VERSION)
-                .actualDate(ZonedDateTime.now())
-                .message(message)
-                .build();
+    protected ArticleResponse createSuccessResponse(Article article) {
+        return ArticleMapper.buildSuccessResponse(article);
     }
 }

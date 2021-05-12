@@ -8,7 +8,7 @@ import pl.sidor.ArticleManager.domain.model.entity.Author;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/authors")
+@RequestMapping("/api/v1/authors")
 @RequiredArgsConstructor
 public class AuthorEndpoint {
 

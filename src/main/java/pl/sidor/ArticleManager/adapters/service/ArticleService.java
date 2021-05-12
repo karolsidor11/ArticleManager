@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Optional;
 
 @Service
 @Setter
@@ -32,8 +33,8 @@ public class ArticleService implements ArticleRepository {
 
     @Override
     public Option<Article> getByTitle(String title) {
-        CriteriaQuery<Article> query = prepareQuery(title);
-        return Option.ofOptional(entityManager.createQuery(query).getResultStream().findFirst());
+        Optional<Article> article = tryFindByTitle(title);
+        return Option.ofOptional(article);
     }
 
     @Override
@@ -55,13 +56,14 @@ public class ArticleService implements ArticleRepository {
         return article;
     }
 
-    private CriteriaQuery<Article> prepareQuery(String title) {
+    private Optional<Article> tryFindByTitle(String title) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Article> query = criteriaBuilder.createQuery(Article.class);
         Root<Article> root = query.from(Article.class);
         Predicate titlePredicate = criteriaBuilder.equal(root.get("title"), title);
         query.where(titlePredicate);
-        return query;
+
+         return entityManager.createQuery(query).getResultStream().findFirst();
     }
 
     private Article updateArticle(Article article, Article currentArticle) {

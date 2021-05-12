@@ -12,7 +12,7 @@ class ArticleMapperTest extends Specification {
         Article article = ArticleUtils.getArticle1()
 
         when:
-        def result = ArticleMapper.map(article)
+        def result = ArticleMapper.buildSuccessResponse(article)
 
         then:
         result != null
