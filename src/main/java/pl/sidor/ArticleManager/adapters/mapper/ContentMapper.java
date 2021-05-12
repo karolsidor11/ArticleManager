@@ -12,12 +12,21 @@ import static pl.sidor.ArticleManager.utils.ApplicationUtils.APPLICATION_VERSION
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ContentMapper {
 
-    public static ContentResponse map(Content content) {
+    public static ContentResponse buildSuccessResponse(Content content) {
         return ContentResponse.builder()
                 .applicationName(APPLICATION_NAME)
                 .applicationVersion(APPLICATION_VERSION)
                 .actualDate(ZonedDateTime.now())
                 .value(content.getValue())
+                .build();
+    }
+
+    public static ContentResponse buildFailsResponse(String message){
+        return ContentResponse.builder()
+                .applicationName(APPLICATION_NAME)
+                .applicationVersion(APPLICATION_VERSION)
+                .actualDate(ZonedDateTime.now())
+                .message(message)
                 .build();
     }
 

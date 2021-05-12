@@ -11,13 +11,21 @@ import static pl.sidor.ArticleManager.utils.ApplicationUtils.APPLICATION_VERSION
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AuthorMapper {
 
-    public static AuthorResponse map(Author author) {
+    public static AuthorResponse buildSuccessResponse(Author author) {
         return AuthorResponse.builder()
                 .applicationName(APPLICATION_NAME)
                 .applicationVersion(APPLICATION_VERSION)
                 .name(author.getName())
                 .lastName(author.getLastName())
                 .email(author.getEmail())
+                .build();
+    }
+
+    public static AuthorResponse buildFailsResponse(String message) {
+        return AuthorResponse.builder()
+                .applicationName(APPLICATION_NAME)
+                .applicationVersion(APPLICATION_VERSION)
+                .message(message)
                 .build();
     }
 

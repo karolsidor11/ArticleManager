@@ -7,7 +7,7 @@ import pl.sidor.ArticleManager.adapters.response.ContentResponse;
 import pl.sidor.ArticleManager.domain.model.entity.Content;
 
 @RestController
-@RequestMapping("/contents")
+@RequestMapping("/api/v1/contents")
 @RequiredArgsConstructor
 public class ContentEndpoint {
 

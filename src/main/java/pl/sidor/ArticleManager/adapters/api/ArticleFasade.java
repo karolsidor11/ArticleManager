@@ -43,7 +43,6 @@ public class ArticleFasade {
         return articleResponse.createFailsResponse(message);
     }
 
-
     private ArticleResponse saveArticle(Article article) {
         Option<Article> articleOption = Option.of(articleService.save(article));
         return articleResponse.createResponse(articleOption, null);

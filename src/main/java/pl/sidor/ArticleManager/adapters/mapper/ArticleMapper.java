@@ -13,7 +13,7 @@ import static pl.sidor.ArticleManager.utils.ApplicationUtils.APPLICATION_VERSION
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ArticleMapper {
 
-    public static ArticleResponse map(Article article) {
+    public static ArticleResponse buildSuccessResponse(Article article) {
         return ArticleResponse.builder()
                 .applicationName(APPLICATION_NAME)
                 .applicationVersion(APPLICATION_VERSION)
@@ -21,6 +21,15 @@ public final class ArticleMapper {
                 .title(article.getTitle())
                 .author(article.getAuthor())
                 .content(article.getContent())
+                .build();
+    }
+
+    public static ArticleResponse buildFailsResponse(String message) {
+        return ArticleResponse.builder()
+                .applicationName(APPLICATION_NAME)
+                .applicationVersion(APPLICATION_VERSION)
+                .actualDate(ZonedDateTime.now())
+                .message(message)
                 .build();
     }
 

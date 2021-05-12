@@ -1,5 +1,8 @@
 package pl.sidor.ArticleManager.utils;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ApplicationUtils {
 
     public final static String APPLICATION_NAME = "Article Manager";

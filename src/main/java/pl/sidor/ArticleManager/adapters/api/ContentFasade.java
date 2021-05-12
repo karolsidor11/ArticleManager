@@ -42,6 +42,6 @@ public class ContentFasade {
 
     private ContentResponse saveContent(Content content) {
         Content currentContent = contentService.save(content);
-        return ContentMapper.map(currentContent);
+        return ContentMapper.buildSuccessResponse(currentContent);
     }
 }

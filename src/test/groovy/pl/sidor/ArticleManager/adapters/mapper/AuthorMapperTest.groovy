@@ -12,7 +12,7 @@ class AuthorMapperTest extends Specification {
         Author author = AuthorUtils.getAuthor1()
 
         when:
-        def result = AuthorMapper.map(author)
+        def result = AuthorMapper.buildSuccessResponse(author)
 
         then:
         noExceptionThrown()
